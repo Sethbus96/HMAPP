@@ -110,7 +110,7 @@ router.post('/addReport',async(req,res)=>{
 
 /* ------GET USER REPORTS ------
 ---------------------------- */
-router.get('/getReports',async(req,res)=>{
+router.post('/getReports',async(req,res)=>{
 
   try{
       const token=await req.body.token;

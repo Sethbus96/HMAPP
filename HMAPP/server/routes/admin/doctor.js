@@ -110,11 +110,9 @@ router.post('/addResponse',async(req,res)=>{
 
 /* ------Get All Patients--------
 ---------------------------- */
-router.get('/getAllPatients',async(req,res)=>{
-
+router.post('/getAllPatients',async(req,res)=>{
     try{
         const token=await req.body.token;
-
         const payload=jwt.verify(await token,process.env.jwt_master_secret);
         if(!payload){
           return res.send({"error":"Could not verify"});
@@ -129,6 +127,7 @@ router.get('/getAllPatients',async(req,res)=>{
                 const userReports = await report.find({user_id:users._id})
                 users[i]["reports"] = userReports.length;
               }
+
               return res.send({"success": "true","users":users});
 
             }
