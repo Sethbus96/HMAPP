@@ -1,0 +1,24 @@
+{
+  "name": "hospital-management-application",
+  "version": "1.0.0",
+  "description": "A web app for doctors and patients",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Seth Russel Akomeah",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "*",
+    "bcrypt": "*",
+    "cors": "*",
+    "dotenv": "*",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
