@@ -113,10 +113,8 @@ router.post('/addReport',async(req,res)=>{
 /* ------GET USER REPORTS ------
 ---------------------------- */
 router.post('/getReports',async(req,res)=>{
-  console.log('Began reports');
   try{
       const token=await req.body.token;
-      console.log(token);
 
       const payload=jwt.verify(await token,process.env.jwt_master_secret);
       if(!payload){

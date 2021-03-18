@@ -148,6 +148,9 @@ export default {
         .post('/user/addReport', this.addReportDetails)
         .then((Response) => {
           if (Response.data.success) {
+            this.addReportDetails.subject = '';
+            this.addReportDetails.issue = '';
+            this.addReportDetails.image = '';
             this.errorDialog = false;
             this.showAddReport = false;
             this.reported = true;

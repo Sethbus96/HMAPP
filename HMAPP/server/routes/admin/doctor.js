@@ -144,22 +144,17 @@ router.post('/getAllPatients',async(req,res)=>{
 
 
 router.post('/verify',async(req,res)=>{
-  console.log('came in here');
     try{
         const token=await req.body.token;
-        console.log(token);
 
         const payload=jwt.verify(await token,process.env.jwt_master_secret);
         if(!payload){
-          console.log('is not payload');
           return res.send({"error":"Could not verify"});
         }
 
-        console.log('begining to try');
-
         try{
           const admindata =await admin.findOne({"_id":await payload.id,"name": await payload.name});
-            if(admindata) console.log('is admin'); return res.send({"success":"Found user","name": admindata.name});
+            if(admindata) return res.send({"success":"Found user","name": admindata.name});
         }catch(err){
           return res.send({"error":"Session expired, Login again to continue"})
         }

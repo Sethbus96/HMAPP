@@ -15,19 +15,19 @@
     <section class="clean-block about-us">
         <div class="container">
             <div class="block-heading">
-                <h2 class="text-info">About <span style="text-decoration: line-through;">Us</span> Myself</h2>
+                <h2 class="text-info">About <span style="text-decoration: line-through;">Us</span> This Project</h2>
             </div>
             <div class="row justify-content-center">
                 <div class="col-11 col-sm-8 col-md-6 col-lg-4">
-                    <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="assets/img/Seth3e.jpg">
+                    <div class="card clean-card text-center">
                         <div class="card-body info">
                             <h4 class="card-title">Seth Russel Akomeah</h4>
-                            <p class="card-text">Just a regular web app programmer</p>
+                            <p class="card-text">Just a regular web app dev</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-10 col-sm-10 col-md-6 col-lg-4">
-                    <p>I had to learn Vue, Node.js and Mongo from scratch. How was that?</p>
+                    <p>'About' page waiting to be updated</p>
                 </div>
             </div>
         </div>

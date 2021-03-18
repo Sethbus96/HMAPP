@@ -85,6 +85,15 @@ export default {
       .then(Response => {
         if (Response.data.success) {
           this.users = Response.data.users;
+
+          for(let i = 0; i < this.users.length; i++){
+            if(!this.users[i]["reports"]){
+              this.users[i]["reports"] = "0";
+            }
+
+            console.log(this.users[i]["reports"]);
+          }
+
         }
         if (Response.data.error) {
           // TO-DO: I'll handle the error here
