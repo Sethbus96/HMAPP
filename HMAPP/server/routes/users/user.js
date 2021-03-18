@@ -68,7 +68,6 @@ router.post('/addReport',async(req,res)=>{
 
     const {error}=validation.userreportdatavalidation(req.body)
     if(error) return res.send({"error":error.details[0].message})
-
     try{
         const token=await req.body.token;
 
@@ -95,14 +94,17 @@ router.post('/addReport',async(req,res)=>{
                 return res.send({"success": "true","reports":newreport})
               }
               else{
-                return res.send({"error":"Error saving to database"})
+                return res.send({"error":"Error saving to database"});
               }
             }
+            else {
+              return res.send({"error":"User doesn't exist"})
+            }
         }catch(err){
-          return res.send({"error":"Session expired, Login again to continue"})
+          return res.send({"error":"Session expired, Login again to continue"});
         }
     }catch(err){
-      return res.send({"error":"Session expired, Login again to continue"})
+      return res.send({"error":"Session expired, Login again to continue"});
     }
 
 })
@@ -111,9 +113,10 @@ router.post('/addReport',async(req,res)=>{
 /* ------GET USER REPORTS ------
 ---------------------------- */
 router.post('/getReports',async(req,res)=>{
-
+  console.log('Began reports');
   try{
       const token=await req.body.token;
+      console.log(token);
 
       const payload=jwt.verify(await token,process.env.jwt_master_secret);
       if(!payload){
@@ -130,20 +133,9 @@ router.post('/getReports',async(req,res)=>{
               const response = await d_response.findOne({issue_id:datas[i]._id})
 
               datas[i]["response"] = response;
-
-            this.$axios
-              .get("/user/getResponse", { issue_id: datas[i]._id })
-              .then(Response => {
-                if (Response.data.success) {
-                  this.reports[i]["response"] = Response.data.response;
-                  this.user_name = Response.data.name;
-                  this.user_id = Response.data.id;
-                }
-              })
-              .catch(Error => {
-                // TO-DO
-              });
-
+              if(datas[i]["response"] == null) {
+                datas[i]["response"] = '0'
+              }
             }
 
             return res.send({"success": "true","reports":datas});
@@ -157,24 +149,13 @@ router.post('/getReports',async(req,res)=>{
 
 })
 
-
-/* ------GET Doctors Response ------
----------------------------- */
-router.get('/getResponse',async(req,res)=>{
-
-  const response = await d_response.findOne({issue_id:req.body.issue_id})
-
-  if(response) {
-    return res.send({"success": "true","response":response});
-  }else{
-    return res.send({"error":"Yet to be replied"});
-  }
-
-})
-
 router.post('/verify',async(req,res)=>{
     try{
         const token=await req.body.token;
+
+        if(!token) {
+          return res.send({"error":"Invalid token"});
+        }
 
         const payload=jwt.verify(await token,process.env.jwt_master_secret);
         if(!payload){
@@ -183,12 +164,12 @@ router.post('/verify',async(req,res)=>{
 
         try{
           const userdata =await user.findOne({"_id":await payload.id,"name": await payload.name});
-            if(userdata) return res.send({"success":"Found user","name": userdata.name, "id": userdata._id});
+            if(userdata) return res.send({"success":"Found user","name": userdata.name});
         }catch(err){
-          return res.send({"error1":"Session expired, Login again to continue"})
+          return res.send({"error":"Session expired, Login again to continue"});
         }
     }catch(err){
-      return res.send({"error2":"Session expired, Login again to continue"})
+      return res.send({"error":"Session expired, Login again to continue"})
     }
 })
 

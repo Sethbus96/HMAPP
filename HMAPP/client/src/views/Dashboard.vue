@@ -87,7 +87,6 @@ export default {
       reported: false,
       errormessage: "",
       user_name: "",
-      user_id: "",
       addReportDetails: { subject: '', issue: '', image: '', token: '' },
     };
   },
@@ -97,20 +96,25 @@ export default {
     },
   },
   beforeCreate() {
-    this.$axios
-      .post("/user/verify", { token: cookies.get("token") })
-      .then(Response => {
-        if (Response.data.success) {
-          this.user_name = Response.data.name;
-          this.user_id = Response.data.id;
-        }
-        if (Response.data.error) {
-          this.$router.push("/");
-        }
-      })
-      .catch(Error => {
-        // TO-DO
-      });
+    if (cookies.get("token")){
+      this.$axios
+        .post("/user/verify", { token: cookies.get("token") })
+        .then(Response => {
+          if (Response.data.success) {
+            this.user_name = Response.data.name;
+          }
+          if (Response.data.error) {
+            this.$router.push("/");
+          }
+        })
+        .catch(Error => {
+          // TO-DO
+        });
+    }
+    else{
+      this.$router.push("/");
+    }
+
   },
   mounted() {
     this.$axios
@@ -123,24 +127,6 @@ export default {
           else{
             this.reported = true;
             this.reports = Response.data.reports;
-
-            for(let i = 0; i < this.reports.length; i++){
-
-            this.$axios
-              .get("/user/getResponse", { issue_id: this.reports[i]._id })
-              .then(Response => {
-                if (Response.data.success) {
-                  this.reports[i]["response"] = Response.data.response;
-                  this.user_name = Response.data.name;
-                  this.user_id = Response.data.id;
-                }
-              })
-              .catch(Error => {
-                // TO-DO
-              });
-
-            }
-
           }
         }
         if (Response.data.error) {
@@ -177,9 +163,6 @@ export default {
         });
 
     },
-    getResponds(id) {
-      return true;
-    }
-  }
+  },
 };
 </script>

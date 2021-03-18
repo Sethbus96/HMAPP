@@ -6,7 +6,7 @@
                 id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="dashboard1.html">Dashboard</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="index1.html">LOGOUT</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="#">LOGOUT</a></li>
                 </ul>
             </div>
         </div>
@@ -16,7 +16,7 @@
             <div class="container">
                 <div class="block-heading" style="padding: 0px;">
                     <h4 class="text-left" style="margin-bottom: 10px;">Welcome to the Administration Dashboard</h4>
-                    <h5 class="text-left" style="margin-bottom: 30px;">Name: <strong>Dr. Sampson Nketia</strong></h5>
+                    <h5 class="text-left" style="margin-bottom: 30px;">Name: <strong>{{ user_name }}</strong></h5>
                     <div class="row">
                         <div class="col">
                             <div class="block-heading" style="padding-top: 0px;margin-bottom: 10px;">
@@ -66,14 +66,13 @@ export default {
   },
   beforeCreate() {
     this.$axios
-      .post("/user/verify", { token: cookies.get("token") })
+      .post("/doctor/verify", { token: cookies.get("token") })
       .then(Response => {
         if (Response.data.success) {
           this.user_name = Response.data.name;
-          this.user_id = Response.data.id;
         }
         if (Response.data.error) {
-          this.$router.push("/");
+          this.$router.push("/admin-login");
         }
       })
       .catch(Error => {
@@ -98,7 +97,7 @@ export default {
   methods: {
     logout() {
       cookies.remove("token");
-      this.$router.push("/");
+      this.$router.push("/admin-login");
     },
     addReport() {
       this.addReportDetails.token = cookies.get("token");
