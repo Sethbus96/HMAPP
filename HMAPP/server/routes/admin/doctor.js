@@ -124,13 +124,13 @@ router.post('/getAllPatients',async(req,res)=>{
           const doctordata =await admin.findOne({"_id":await payload.id,"name": await payload.name});
             if(doctordata) {
               const users = await user.find();
+              const reports = [];
 
               for(let i = 0; i < users.length; i++){
-                const userReports = await report.find({user_id:users._id})
-                users[i]["reports"] = userReports.length;
+                const userReports = await report.find({user_id:users[i]._id});
+                reports[i] = userReports.length;
               }
-
-              return res.send({"success": "true","users":users});
+              return res.send({"success": "true","users":users, "reports":reports});
 
             }
         }catch(err){

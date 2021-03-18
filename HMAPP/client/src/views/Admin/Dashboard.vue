@@ -25,8 +25,9 @@
                             </div>
                         </div>
                     </div>
-                    <div v-for="user in users" :key="user._id" class="row justify-content-center">
-                        <div class="col-sm-6 col-lg-4" style="padding: 15px;">
+
+                    <div class="row justify-content-center">
+                        <div v-for="user in users" :key="user._id" class="col-sm-6 col-lg-4" style="padding: 15px;">
                             <div class="card clean-card text-center">
                                 <div class="card-body info">
                                     <h4 class="card-title" style="font-size: 20px;">{{ user.name }}</h4>
@@ -34,6 +35,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -87,16 +89,12 @@ export default {
           this.users = Response.data.users;
 
           for(let i = 0; i < this.users.length; i++){
-            if(!this.users[i]["reports"]){
-              this.users[i]["reports"] = "0";
-            }
-
-            console.log(this.users[i]["reports"]);
+            this.users[i].reports = Response.data.reports[i];
           }
 
         }
         if (Response.data.error) {
-          // TO-DO: I'll handle the error here
+          this.$router.push("/admin-login");
         }
       })
       .catch(Error => {
