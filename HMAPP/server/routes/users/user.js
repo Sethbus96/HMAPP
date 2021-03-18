@@ -148,25 +148,30 @@ router.post('/getReports',async(req,res)=>{
 })
 
 router.post('/verify',async(req,res)=>{
-    try{
-        const token=await req.body.token;
+    if(req.body.token){
+      try{
+          const token=await req.body.token;
 
-        if(!token) {
-          return res.send({"error":"Invalid token"});
-        }
+          if(!token) {
+            return res.send({"error":"Invalid token"});
+          }
 
-        const payload=jwt.verify(await token,process.env.jwt_master_secret);
-        if(!payload){
-          return res.send({"error":"Could not verify"});
-        }
+          const payload=jwt.verify(await token,process.env.jwt_master_secret);
+          if(!payload){
+            return res.send({"error":"Could not verify"});
+          }
 
-        try{
-          const userdata =await user.findOne({"_id":await payload.id,"name": await payload.name});
-            if(userdata) return res.send({"success":"Found user","name": userdata.name});
-        }catch(err){
-          return res.send({"error":"Session expired, Login again to continue"});
-        }
-    }catch(err){
+          try{
+            const userdata =await user.findOne({"_id":await payload.id,"name": await payload.name});
+              if(userdata) return res.send({"success":"Found user","name": userdata.name});
+          }catch(err){
+            return res.send({"error":"Session expired, Login again to continue"});
+          }
+      }catch(err){
+        return res.send({"error":"Session expired, Login again to continue"})
+      }
+    }
+    else{
       return res.send({"error":"Session expired, Login again to continue"})
     }
 })

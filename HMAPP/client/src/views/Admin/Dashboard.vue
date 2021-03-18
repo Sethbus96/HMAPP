@@ -5,7 +5,7 @@
             <div class="collapse navbar-collapse"
                 id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="dashboard1.html">Dashboard</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="/admin">Dashboard</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="#">LOGOUT</a></li>
                 </ul>
             </div>
@@ -52,19 +52,8 @@ export default {
   data: () => {
     return {
       users: [],
-      showAddReport: false,
-      errorDialog: false,
-      reported: false,
-      errormessage: "",
       user_name: "",
-      user_id: "",
-      addReportDetails: { subject: '', issue: '', image: '', token: '' },
     };
-  },
-  computed: {
-    reverseReports() {
-      return this.reports.slice().reverse();
-    },
   },
   beforeCreate() {
     this.$axios
@@ -94,7 +83,7 @@ export default {
 
         }
         if (Response.data.error) {
-          this.$router.push("/admin-login");
+          // Do something here
         }
       })
       .catch(Error => {
@@ -106,30 +95,6 @@ export default {
       cookies.remove("token");
       this.$router.push("/admin-login");
     },
-    addReport() {
-      this.addReportDetails.token = cookies.get("token");
-      this.$axios
-        .post('/user/addReport', this.addReportDetails)
-        .then((Response) => {
-          if (Response.data.success) {
-            this.errorDialog = false;
-            this.showAddReport = false;
-            this.reported = true;
-            this.reports.push(Response.data.reports);
-          }
-          if (Response.data.error) {
-            this.errormessage = Response.data.error;
-            this.errorDialog = true;
-          }
-        })
-        .catch((Error) => {
-          // TO-DO
-        });
-
-    },
-    getResponds(id) {
-      return true;
-    }
   }
 };
 </script>

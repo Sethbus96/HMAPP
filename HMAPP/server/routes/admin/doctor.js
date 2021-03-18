@@ -144,6 +144,7 @@ router.post('/getAllPatients',async(req,res)=>{
 
 
 router.post('/verify',async(req,res)=>{
+  if(req.body.token){
     try{
         const token=await req.body.token;
 
@@ -161,6 +162,11 @@ router.post('/verify',async(req,res)=>{
     }catch(err){
       return res.send({"error":"Session expired, Login again to continue"})
     }
+  }
+  else{
+    return res.send({"error":"Session expired, Login again to continue"})
+  }
+
 })
 
 module.exports = router;

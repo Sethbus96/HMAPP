@@ -82,7 +82,7 @@ export default {
             this.errormessage = Response.data.error;
             this.errorDialog = true;
           }
-        })
+        });
     },
     register() {
       this.$axios
@@ -98,7 +98,7 @@ export default {
             this.errormessage = Response.data.error;
             this.errorDialog = true;
           }
-        })
+        });
     },
   },
   beforeCreate() {
