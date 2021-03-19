@@ -5,7 +5,7 @@
           <div class="collapse navbar-collapse"
               id="navcol-1">
               <ul class="nav navbar-nav ml-auto">
-                  <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="#">LOGOUT</a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="/">LOGOUT</a></li>
               </ul>
           </div>
       </div>
@@ -39,7 +39,7 @@
                   <div v-for="report in reverseReports" :key="report._id" class="d-flex justify-content-center" style="margin-top: 30px;">
                       <div class="col-md-10 col-lg-9" style="box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;">
                           <div class="row" style="background-color: #ffffff;">
-                              <div v-if="report.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;"><img v-if="report.image" :src="report.image" :alt="report.image" style="width: 100%;"></div>
+                              <div v-if="report.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;"><img v-if="report.image" :src="report.image" :alt="report.subject" style="width: 100%;"></div>
                               <div class="col" style="padding: 10px;padding-right: 16px;">
                                   <p class="text-left" style="font-weight: bold;font-size: 18px;margin: 0px;max-width: none;">{{ report.subject }}</p>
                                   <p class="text-left" style="font-size: 15px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;">{{ report.issue }}</p>
@@ -140,7 +140,6 @@ export default {
   methods: {
     logout() {
       cookies.remove("token");
-      this.$router.push("/");
     },
     addReport() {
       this.addReportDetails.token = cookies.get("token");

@@ -6,7 +6,7 @@
                 id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="/admin">Dashboard</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="#">LOGOUT</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" @click="logout" href="/admin-login">LOGOUT</a></li>
                 </ul>
             </div>
         </div>
@@ -31,7 +31,7 @@
                             <div class="card clean-card text-center">
                                 <div class="card-body info">
                                     <h4 class="card-title" style="font-size: 20px;">{{ user.name }}</h4>
-                                    <p class="card-text" style="font-size: 15px;">{{ user.reports }} reported issues</p><a class="card-link stretched-link" href="#"></a></div>
+                                    <p class="card-text" style="font-size: 15px;">{{ user.reports }} reported issues</p><a class="card-link stretched-link" @click="viewUser(user._id)" href="/patient"></a></div>
                             </div>
                         </div>
                     </div>
@@ -93,8 +93,12 @@ export default {
   methods: {
     logout() {
       cookies.remove("token");
-      this.$router.push("/admin-login");
     },
-  }
+    viewUser(id) {
+      cookies.set('-u', id, {
+        expires: new Date(Date.now() + 2.592e8),
+      });
+    },
+  },
 };
 </script>

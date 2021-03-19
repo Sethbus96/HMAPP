@@ -142,6 +142,50 @@ router.post('/getAllPatients',async(req,res)=>{
 
 })
 
+/* ------Get USER--------
+---------------------------- */
+router.post('/getUserLogs',async(req,res)=>{
+    if(req.body.token){
+
+      try{
+          const token=await req.body.token;
+
+          const payload=jwt.verify(await token,process.env.jwt_master_secret);
+          if(!payload){
+            return res.send({"error":"Could not verify"});
+          }
+
+          try{
+            const userdata =await user.findOne({"_id":req.body.user_id});
+              if(userdata) {
+                const datas = await report.find({"user_id":req.body.user_id});
+
+                for(let i = 0; i < datas.length; i++){
+
+                  const response = await d_response.findOne({issue_id:datas[i]._id})
+
+                  datas[i]["response"] = response;
+                  if(datas[i]["response"] == null) {
+                    datas[i]["response"] = '0'
+                  }
+                }
+
+                return res.send({"success": "true","reports":datas, "patient":userdata.name});
+              }
+          }catch(err){
+            return res.send({"error":"Session expired, Login again to continue"})
+          }
+      }catch(err){
+        return res.send({"error":"Session expired, Login again to continue"})
+      }
+
+    }
+    else{
+      return res.send({"error":"Session expired, Login again to continue"})
+    }
+
+})
+
 
 router.post('/verify',async(req,res)=>{
   if(req.body.token){
