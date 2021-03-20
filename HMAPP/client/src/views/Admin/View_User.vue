@@ -28,7 +28,7 @@
                   <div class="d-flex justify-content-center" style="margin-top: 30px;">
                       <div class="col-md-10 col-lg-9" style="box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;">
                           <div class="row" style="background-color: #ffffff;">
-                              <div v-if="log.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;"><img :src="log.image" :alt="log.subject" src="assets/img/Seth3e.jpg" style="width: 100%;"></div>
+                              <div v-if="log.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;"><img :src="log.image" :alt="log.subject" style="width: 100%;"></div>
                               <div class="col" style="padding: 10px;padding-right: 16px;">
                                   <p class="text-left" style="font-weight: bold;font-size: 18px;margin: 0px;max-width: none;">{{ log.subject }}</p>
                                   <p class="text-left" style="font-size: 15px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;">{{ log.issue }}</p>
@@ -38,16 +38,19 @@
                           </div>
                           <div v-if="!log.response" class="row d-flex justify-content-center" style="background-color: #f7f8ff;padding: 10px;">
                               <div class="col-md-10 col-lg-9 col-xl-8" style="padding: 20px;background-color: #ffffff;">
-                                  <form><textarea class="form-control" id="rmessage" style="margin-top: 15px;" placeholder="Enter response" required="" name="rmessage"></textarea><button class="btn btn-primary" type="submit" style="margin-top: 15px;">Done</button></form>
+                                  <form @submit.prevent="addResponse(log._id)" >
+                                  <textarea v-model="addResponseDetails.response" class="form-control" id="rmessage" style="margin-top: 15px;" placeholder="Enter response" required="" name="rmessage"></textarea>
+                                  <button class="btn btn-primary" type="submit" style="margin-top: 15px;">Done</button>
+                                  </form>
                               </div>
                           </div>
                           <div v-if="log.response" class="row" style="padding-left: 47px;background-color: #f7f8ff;">
-                              <div class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;background-color: #f7f8ff;"><img src="assets/img/Seth3e.jpg" style="width: 100%;"></div>
+                              <div v-if="log.response.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;background-color: #f7f8ff;"><img :src="log.response.image" :alt="log.response.doctor_name" style="width: 100%;"></div>
                               <div class="col" style="padding: 10px;padding-right: 16px;background-color: #f7f8ff;">
-                                  <p class="text-left" style="font-size: 12px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;font-weight: bold;">DR. Rahim Mohamed</p>
-                                  <p class="text-left" style="font-size: 15px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;">You must rest and get medical attention soon!</p>
+                                  <p class="text-left" style="font-size: 12px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;font-weight: bold;">Doctor: {{ log.response.doctor_name }}</p>
+                                  <p class="text-left" style="font-size: 15px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;">{{ log.response.message }}</p>
                                   <div class="d-flex align-items-center">
-                                      <p class="text-left" style="width: 100%;margin: 0px;max-width: none;font-size: 12px;">12:12pm 02/01/2021</p>
+                                      <p class="text-left" style="width: 100%;margin: 0px;max-width: none;font-size: 12px;">{{ log.response.created }}</p>
                                   </div>
                               </div>
                           </div>
@@ -72,6 +75,7 @@ export default {
       user_name: "",
       patient_name: "",
       user_logs: [],
+      addResponseDetails: { response: '' },
     };
   },
   computed: {
@@ -99,17 +103,13 @@ export default {
     .post("/doctor/getUserLogs", { user_id: cookies.get("-u"), token: cookies.get("token") })
     .then(Response => {
       if (Response.data.success) {
-
-        if(Response.data.reports.length === 0){
-          this.reported = false;
-        }
-        else{
-          this.reported = true;
-          this.reports = Response.data.reports;
-        }
-
         this.user_logs = Response.data.reports;
         this.patient_name = Response.data.patient;
+
+        for(let i = 0; i < this.user_logs.length; i++){
+          this.user_logs[i].response = Response.data.response[i];
+        }
+
       }
       if (Response.data.error) {
         // TO-DO: I'll handle the error here
@@ -122,6 +122,25 @@ export default {
   methods: {
     logout() {
       cookies.remove("token");
+    },
+    addResponse(id) {
+      this.addResponseDetails.issue_id = id;
+      this.addResponseDetails.token = cookies.get("token");
+
+      this.$axios
+        .post('/doctor/addResponse', this.addResponseDetails)
+        .then((Response) => {
+          if (Response.data.success) {
+            this.$router.go();
+          }
+          if (Response.data.error) {
+            // TO-DO
+          }
+        })
+        .catch((Error) => {
+          // TO-DO
+        });
+
     },
   },
 };

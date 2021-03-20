@@ -48,21 +48,25 @@
                                       </div>
                               </div>
                           </div>
+
+                          <div v-if="!report.response" class="row" style="background-color: #f7f8ff;">
+                              <div class="col" style="padding: 20px;">
+                                  <p>Waiting for Doctor's reply</p>
+                              </div>
+                          </div>
+
+
                           <div v-if="report.response" class="row" style="padding-left: 47px;background-color: #f7f8ff;">
-                              <div class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;background-color: #f7f8ff;"><img v-if="report.response.image" :src="report.response.image" :alt="report.response.doc_name" style="width: 100%;"></div>
+                              <div v-if="report.response.image" class="col-3 col-md-2 col-lg-2 col-xl-2" style="padding: 10px 15px;background-color: #f7f8ff;"><img :src="report.response.image" :alt="report.response.doctor_name" style="width: 100%;"></div>
                               <div class="col" style="padding: 10px;padding-right: 16px;background-color: #f7f8ff;">
-                                  <p class="text-left" style="font-size: 12px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;font-weight: bold;">{{ report.response.doc_name }}</p>
+                                  <p class="text-left" style="font-size: 12px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;font-weight: bold;">Doctor: {{ report.response.doctor_name }}</p>
                                   <p class="text-left" style="font-size: 15px;margin-right: 0px;margin-left: 0px;max-width: none;margin-bottom: 10px;">{{ report.response.message }}</p>
                                   <div class="d-flex align-items-center">
                                       <p class="text-left" style="width: 100%;margin: 0px;max-width: none;font-size: 12px;">{{ report.response.created }}</p>
                                   </div>
                               </div>
                           </div>
-                          <div v-if="!report.response" class="row" style="padding-left: 47px;background-color: #f7f8ff;">
-                              <div class="col" style="padding: 20px;">
-                                  <p>Waiting for Doctor's reply</p>
-                              </div>
-                          </div>
+
                       </div>
                   </div>
 
@@ -127,6 +131,11 @@ export default {
           else{
             this.reported = true;
             this.reports = Response.data.reports;
+
+            for(let i = 0; i < this.reports.length; i++){
+              this.reports[i].response = Response.data.responses[i];
+            }
+
           }
         }
         if (Response.data.error) {

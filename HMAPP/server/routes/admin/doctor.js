@@ -20,11 +20,16 @@ router.post('/register',async(req,res)=>{
         const salt = await bcrypt.genSalt(10);
         const hashedpassword= await bcrypt.hash(req.body.password,salt)
 
+        var docImg = "https://www.ijn.com.my/wp-content/uploads/2016/10/male.png";
+        if(req.body.image!==''){
+          docImg = req.body.image;
+        }
+
         const newadmin = new admin({
             name:req.body.name,
             email:req.body.email,
             password:hashedpassword,
-            image:req.body.image
+            image:docImg
         })
 
         const isadmin = await admin.findOne({email:req.body.email})
@@ -88,8 +93,9 @@ router.post('/addResponse',async(req,res)=>{
               const response = new d_response({
                   issue_id:req.body.issue_id,
                   doctor_id:admindata._id,
+                  doctor_name:admindata.name,
                   image:admindata.image,
-                  message:req.body.message,
+                  message:req.body.response,
                   created:req.body.created
               })
 
@@ -159,18 +165,19 @@ router.post('/getUserLogs',async(req,res)=>{
             const userdata =await user.findOne({"_id":req.body.user_id});
               if(userdata) {
                 const datas = await report.find({"user_id":req.body.user_id});
+                const response = [];
 
                 for(let i = 0; i < datas.length; i++){
 
-                  const response = await d_response.findOne({issue_id:datas[i]._id})
-
-                  datas[i]["response"] = response;
-                  if(datas[i]["response"] == null) {
-                    datas[i]["response"] = '0'
+                  const responseData = await d_response.findOne({issue_id:datas[i]._id})
+                  if(response){
+                    response[i] = responseData;
+                  }else{
+                    response[i] = null;
                   }
                 }
 
-                return res.send({"success": "true","reports":datas, "patient":userdata.name});
+                return res.send({"success": "true","reports":datas, "response":response, "patient":userdata.name});
               }
           }catch(err){
             return res.send({"error":"Session expired, Login again to continue"})

@@ -2,6 +2,7 @@ const router = require('express').Router();
 const user = require('../../Database_schemas/Users_schema')
 const report = require('../../Database_schemas/Report_schema')
 const d_response = require('../../Database_schemas/D_Response_schema')
+const doctor = require('../../Database_schemas/Admins_schema')
 const validation=require('../../validation/alluservalidations')
 const bcrypt= require('bcrypt')
 const jwt= require('jsonwebtoken')
@@ -125,18 +126,19 @@ router.post('/getReports',async(req,res)=>{
         const userdata =await user.findOne({"_id":await payload.id,"name": await payload.name});
           if(userdata) {
             const datas = await report.find({"user_id":userdata._id});
+            const responses = [];
 
             for(let i = 0; i < datas.length; i++){
 
-              const response = await d_response.findOne({issue_id:datas[i]._id})
+              const responseData = await d_response.findOne({issue_id:datas[i]._id})
 
-              datas[i]["response"] = response;
-              if(datas[i]["response"] == null) {
-                datas[i]["response"] = '0'
+              if(responseData){
+                responses[i] = responseData;
+              }else{
+                responses[i] = null;
               }
             }
-
-            return res.send({"success": "true","reports":datas});
+            return res.send({"success": "true","reports":datas, "responses":responses});
           }
       }catch(err){
         return res.send({"error":"Session expired, Login again to continue"})
